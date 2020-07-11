@@ -86,7 +86,7 @@ namespace Marrwie.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    var path = Server.MapPath("~\\Store");
+                    var path = Server.MapPath(LogHelper.LogFolder);
                     var fullPath = FileHelper.CheckLogFile(path);
                     var logMessage = $"{model.Email} kullanıcısı {DateTime.Now:dd.MM.yyyy HH:mm} tarihinde login oldu.";
                     LogHelper.TryLog(fullPath, logMessage);

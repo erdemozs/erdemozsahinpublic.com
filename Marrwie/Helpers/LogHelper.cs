@@ -2,6 +2,8 @@
 {
     public static class LogHelper
     {
+        public static readonly string LogFolder = "~\\Store";
+
         public static bool TryLog(string logPath, string logMessage)
         {
             bool result;

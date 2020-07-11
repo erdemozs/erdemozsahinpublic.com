@@ -13,7 +13,7 @@ namespace Marrwie.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Index()
         {
-            var path = Server.MapPath("~\\Store");
+            var path = Server.MapPath(LogHelper.LogFolder);
             var fullPath = FileHelper.CheckLogFile(path);
             ViewBag.Logs = System.IO.File.ReadAllText(fullPath);
             return View();
