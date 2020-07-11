@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Marrwie.Models.ApplicationUser>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rol Değiştir</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="myModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Kaydet</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                <button type="button" class="btn btn-warning" onclick="OpenPopup('@item.Id')">Rol Değiştir</button> |
+                @Html.ActionLink("Makaleleri", "GetArticlesOfUser", "Article", new { id = item.Id } , htmlAttributes : new { @class = "btn btn-primary" }) 
+            </td>
+        </tr>
+    }
+</table>
+
+<script>
+    function OpenPopup(id) {
+        $('#myModal').modal('toggle');
+        $.ajax({
+            url:"@Url.Action("ChangeRole","Account")",
+            method :"post",
+            data: { userId: id, ReqPage : '@Marrwie.Models.RequestPage.Kullanicilar' },
+            success: function (result) {
+                $("#myModalBody").html(result);
+            }
+        });
+    }
+
+    function submitForm() {
+        $('#myModal').modal('toggle');
+        $("#myRoleForm").submit();
+    }
+</script>
+

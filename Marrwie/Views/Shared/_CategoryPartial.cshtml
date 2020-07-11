@@ -1,0 +1,15 @@
+﻿@{ 
+    var db = new Marrwie.Entities.MarrwieDbContext();
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Kategoriler
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+        @foreach (var category in db.Categories.ToList())
+        {
+            <a class="dropdown-item" href="@Url.Action("GetArticlesForCategory", "Article", new { id = category.Id })">@category.Name</a>
+        }
+    </div>
+</li>

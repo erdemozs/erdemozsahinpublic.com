@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Marrwie.Models.ApplicationUser>
+
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rol Değiştir</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="myModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Kaydet</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("ChangeRoleOfUser", "Account", null, FormMethod.Post))
+{
+    <table class="table table-responsive table-hover">
+        <thead>
+            <tr>
+                <th>Kullanıcı Adı</th>
+                <th>Roller</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        @foreach (var role in (List<Marrwie.Models.ApplicationRole>)ViewBag.AllRoles)
+                        {
+                            if (user.Roles.Any(p => p.RoleId == role.Id))
+                            {
+                                <label style="color:blue;">@role.Name</label>
+                            }
+                            else
+                            {
+                                <label style="text-decoration:line-through;color:red;">@role.Name</label>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning" onclick="OpenPopup('@user.Id')">Rol Değiştir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script>
+    function OpenPopup(id) {
+        $('#myModal').modal('toggle');
+        $.ajax({
+            url:"@Url.Action("ChangeRole","Account")",
+            method :"post",
+            data: { userId: id, ReqPage : '@Marrwie.Models.RequestPage.Yetkiler' },
+            success: function (result) {
+                $("#myModalBody").html(result);
+            }
+        });
+    }
+
+    function submitForm() {
+        $('#myModal').modal('toggle');
+        $("#myRoleForm").submit();
+    }
+</script>
+
+
+

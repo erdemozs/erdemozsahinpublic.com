@@ -1,0 +1,15 @@
+﻿@model Marrwie.Models.ArticleViewModel
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>@Model.Title</h1>
+    </div>
+    <div class="col-md-4 text-right">
+        Yazar : @Model.CreatedUserName
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Raw(@Model.Desciption)
+    </div>
+</div>

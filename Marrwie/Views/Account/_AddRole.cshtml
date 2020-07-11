@@ -1,0 +1,16 @@
+﻿@model Marrwie.Models.ChangeRoleViewModel
+
+<p class="text-danger">@Model.Username</p>
+
+@using (Html.BeginForm("ChangeUserRoles", "Account", FormMethod.Post, htmlAttributes: new { @id = "myRoleForm" }))
+{
+    <input type="hidden" value="@Model.UserId" name="UserId" />
+    <input type="hidden" value="@Model.RequestPage" name="RequestPage" />
+    for (int i = 0; i < Model.MyRoles.Count; i++)
+    {
+        @Html.HiddenFor(m => m.MyRoles[i].RoleId, new { name = "MyRoles[" + i + "].RoleId" })
+        @Html.CheckBoxFor(m => Model.MyRoles[i].HasGot, new { name = "MyRoles[" + i + "].HasGot" })
+        <label>@Model.MyRoles[i].RoleName</label>
+        @Html.HiddenFor(m => m.MyRoles[i].RoleName, new { name = "MyRoles[" + i + "].RoleName" })
+    }
+}
