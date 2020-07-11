@@ -17,7 +17,7 @@ namespace Marrwie.Controllers
             var model = new HomeViewModel();
             model.Articles = new List<ArticleViewModel>();
             
-            foreach(var art in db.Articles.OrderByDescending(p => p.CreatedDate).Skip((pageNumber - 1) * 10).Take(10).ToList())
+            foreach(var art in db.Articles.OrderByDescending(p => p.Id).Skip((pageNumber - 1) * 10).Take(10).ToList())
             {
                 var articleModel = new ArticleViewModel();
                 articleModel.Id = art.Id;
@@ -31,6 +31,7 @@ namespace Marrwie.Controllers
                 model.Articles.Add(articleModel);
             }
             model.TotalPageNumber = db.Articles.Count() != 0 ? (int)Math.Ceiling(db.Articles.Count() / 10d):0;
+            model.CurrentPageNumber = pageNumber;
             return View(model);
         }
 

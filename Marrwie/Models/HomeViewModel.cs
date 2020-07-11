@@ -9,5 +9,7 @@ namespace Marrwie.Models
     {
         public List<ArticleViewModel> Articles { get; set; }
         public int TotalPageNumber { get; set; }
+        public int CurrentPageNumber { get; set; }
+        public int CategoryId { get; set; }
     }
 }

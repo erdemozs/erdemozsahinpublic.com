@@ -30,7 +30,7 @@ namespace Marrwie.Controllers
             var model = new HomeViewModel();
             model.Articles = new List<ArticleViewModel>();
 
-            foreach (var art in db.Articles.Where(p => p.Categories.Select(t => t.Id).Contains(id)).ToList().OrderByDescending(p => p.CreatedDate).Skip((pageNumber - 1) * 10).Take(10).ToList())
+            foreach (var art in db.Articles.Where(p => p.Categories.Select(t => t.Id).Contains(id)).ToList().OrderByDescending(p => p.Id).Skip((pageNumber - 1) * 10).Take(10).ToList())
             {
                 var articleModel = new ArticleViewModel();
                 articleModel.Id = art.Id;
@@ -44,6 +44,8 @@ namespace Marrwie.Controllers
                 model.Articles.Add(articleModel);
             }
             model.TotalPageNumber = db.Articles.Where(p => p.Categories.Select(t => t.Id).Contains(id)).ToList().Count() != 0 ? (int)Math.Ceiling(db.Articles.Where(p => p.Categories.Select(t => t.Id).Contains(id)).ToList().Count() / 10d) : 0;
+            model.CurrentPageNumber = pageNumber;
+            model.CategoryId = id;
             return View(model);
         }
 
