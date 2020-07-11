@@ -202,6 +202,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\MarrwieDataInitializer.cs" />
     <Compile Include="Helpers\StringExtension.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
