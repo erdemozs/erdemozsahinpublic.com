@@ -88,7 +88,8 @@ namespace Marrwie.Controllers
                 case SignInStatus.Success:
                     var path = Server.MapPath("~\\Store");
                     var fullPath = FileHelper.CheckLogFile(path);
-                    System.IO.File.AppendAllText(fullPath, string.Format("{0} kullanıcısı {1} tarihinde login oldu.", model.Email, DateTime.Now.ToString("dd.MM.yyyy HH:mm")));
+                    var logMessage = $"{model.Email} kullanıcısı {DateTime.Now:dd.MM.yyyy HH:mm} tarihinde login oldu.";
+                    LogHelper.TryLog(fullPath, logMessage);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
