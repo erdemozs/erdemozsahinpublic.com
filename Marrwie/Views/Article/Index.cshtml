@@ -39,6 +39,9 @@
         <th>
             @Html.DisplayNameFor(model => model.ArticleCategoriesString)
         </th>
+        <th>
+           İçerik
+        </th>
         <th></th>
     </tr>
 
@@ -62,7 +65,9 @@
                 @Html.DisplayFor(modelItem => item.ArticleCategoriesString)
             </td>
             <td>
-                <span> <a href="#" onclick="OpenPopupForArticle('@item.Desciption')">İçerik</a> |</span>
+                <span> @Html.Raw(item.Desciption)</span>
+            </td>
+            <td>
                 @if (item.IsAuthorizedForEdit)
                 {
                     <span> @Html.ActionLink("Güncelle", "Edit", new { id = item.Id }) |</span>
@@ -85,10 +90,4 @@
 
 </table>
 
-<script>
-    function OpenPopupForArticle(description) {
-        $('#myModal').modal('toggle');
-        $('#myModalBody').html(description);
-    }
-</script>
 
