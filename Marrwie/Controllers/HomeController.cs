@@ -17,7 +17,7 @@ namespace Marrwie.Controllers
             var model = new HomeViewModel();
             model.Articles = new List<ArticleViewModel>();
             
-            foreach(var art in db.Articles.OrderByDescending(p => p.Id).Skip((pageNumber - 1) * 10).Take(10).ToList())
+            foreach(var art in db.Articles.Where(p => p.IsApproved).OrderByDescending(p => p.Id).Skip((pageNumber - 1) * 10).Take(10).ToList())
             {
                 var articleModel = new ArticleViewModel();
                 articleModel.Id = art.Id;

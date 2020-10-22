@@ -13,14 +13,13 @@ using Marrwie.Models;
 
 namespace Marrwie.Controllers
 {
-    [Authorize(Roles = "admin")]
     public class ArticleController : Controller
     {
         private MarrwieDbContext db = new MarrwieDbContext();
 
         public ActionResult Index()
         {
-            var model = db.Articles.ToList().Select(p => new ArticleViewModel{ Id = p.Id, ArticleCategoriesString = string.Join(",", p.Categories.Select(t => t.Name).ToList()), CreatedDate = p.CreatedDate, CreatedUserId = p.CreatedUserId, CreatedUserName = p.CreatedUserName, Desciption = p.Desciption, Title = p.Title, UpdatedDate = p.UpdatedDate }).ToList();
+            var model = db.Articles.ToList().Select(p => new ArticleViewModel{ Id = p.Id, ArticleCategoriesString = string.Join(",", p.Categories.Select(t => t.Name).ToList()), CreatedDate = p.CreatedDate, CreatedUserId = p.CreatedUserId, CreatedUserName = p.CreatedUserName, Desciption = p.Desciption, Title = p.Title, UpdatedDate = p.UpdatedDate, IsAuthorizedForEdit = p.CreatedUserId == User.Identity.GetUserId(), IsAuthorizedForDelete = p.CreatedUserId == User.Identity.GetUserId(), IsAuthorizedForDetails = p.CreatedUserId == User.Identity.GetUserId(), IsAuthorizedForApprove = User.IsInRole("admin") && !p.IsApproved, IsApproved = p.IsApproved }).ToList();
             return View(model);
         }
 
@@ -30,7 +29,7 @@ namespace Marrwie.Controllers
             var model = new HomeViewModel();
             model.Articles = new List<ArticleViewModel>();
 
-            foreach (var art in db.Articles.Where(p => p.Categories.Select(t => t.Id).Contains(id)).ToList().OrderByDescending(p => p.Id).Skip((pageNumber - 1) * 10).Take(10).ToList())
+            foreach (var art in db.Articles.Where(p => p.IsApproved && p.Categories.Select(t => t.Id).Contains(id)).ToList().OrderByDescending(p => p.Id).Skip((pageNumber - 1) * 10).Take(10).ToList())
             {
                 var articleModel = new ArticleViewModel();
                 articleModel.Id = art.Id;
@@ -51,13 +50,13 @@ namespace Marrwie.Controllers
 
         public ActionResult GetAllArticles()
         {
-            var model = db.Articles.ToList().Select(p => new ArticleViewModel { Id = p.Id, ArticleCategoriesString = string.Join(",", p.Categories.Select(t => t.Name).ToList()), CreatedDate = p.CreatedDate, CreatedUserId = p.CreatedUserId, CreatedUserName = p.CreatedUserName, Desciption = p.Desciption, Title = p.Title, UpdatedDate = p.UpdatedDate }).ToList();
+            var model = db.Articles.ToList().Select(p => new ArticleViewModel { Id = p.Id, ArticleCategoriesString = string.Join(",", p.Categories.Select(t => t.Name).ToList()), CreatedDate = p.CreatedDate, CreatedUserId = p.CreatedUserId, CreatedUserName = p.CreatedUserName, Desciption = p.Desciption, Title = p.Title, UpdatedDate = p.UpdatedDate}).ToList();
             return View(model);
         }
 
         public ActionResult GetArticlesOfUser(string id)
         {
-            var model = db.Articles.Where(p => p.CreatedUserId == id).ToList().Select(p => new ArticleViewModel { Id = p.Id, ArticleCategoriesString = string.Join(",", p.Categories.Select(t => t.Name).ToList()), CreatedDate = p.CreatedDate, CreatedUserId = p.CreatedUserId, CreatedUserName = p.CreatedUserName, Desciption = p.Desciption, Title = p.Title, UpdatedDate = p.UpdatedDate }).ToList();
+            var model = db.Articles.Where(p => p.CreatedUserId == id).ToList().Select(p => new ArticleViewModel { Id = p.Id, ArticleCategoriesString = string.Join(",", p.Categories.Select(t => t.Name).ToList()), CreatedDate = p.CreatedDate, CreatedUserId = p.CreatedUserId, CreatedUserName = p.CreatedUserName, Desciption = p.Desciption, Title = p.Title, UpdatedDate = p.UpdatedDate}).ToList();
             return View(model);
         }
 
@@ -107,6 +106,7 @@ namespace Marrwie.Controllers
                 article.UpdatedDate = DateTime.Now;
                 article.Desciption = model.Desciption;
                 article.Title = model.Title;
+                article.IsApproved = false;
 
                 var addedCategoryIds = model.ArticleCategories.Where(p => p.HasGot).Select(p => p.Id).ToList().Except(article.Categories.Select(p => p.Id).ToList()).ToList();
 
@@ -129,7 +129,10 @@ namespace Marrwie.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Article article = db.Articles.Find(id);
+
+            
 
             var model = new ArticleViewModel();
             model.CreatedDate = article.CreatedDate;
@@ -153,6 +156,12 @@ namespace Marrwie.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (article.CreatedUserId != User.Identity.GetUserId())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             return View(model);
         }
 
@@ -166,6 +175,7 @@ namespace Marrwie.Controllers
                 article.UpdatedDate = DateTime.Now;
                 article.Desciption = model.Desciption;
                 article.Title = model.Title;
+                article.IsApproved = false;
 
                 var addedCategoryIds = model.ArticleCategories.Where(p => p.HasGot).Select(p => p.Id).ToList().Except(article.Categories.Select(p => p.Id).ToList()).ToList();
                 var deletedCategoryIds = article.Categories.Select(p => p.Id).ToList().Except(model.ArticleCategories.Where(p => p.HasGot).Select(p => p.Id).ToList()).ToList();
@@ -180,6 +190,12 @@ namespace Marrwie.Controllers
                     article.Categories.Remove(db.Categories.Find(deletedCategoryId));
                 }
 
+                if (article.CreatedUserId != User.Identity.GetUserId())
+                {
+                    ModelState.AddModelError("Hata 1", "Size ait olmayan makaleyi değiştiremezsiniz");
+                    return View(model);
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -192,7 +208,14 @@ namespace Marrwie.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Article article = db.Articles.Find(id);
+
+            if (article.CreatedUserId != User.Identity.GetUserId())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             if (article == null)
             {
                 return HttpNotFound();
@@ -205,9 +228,31 @@ namespace Marrwie.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Article article = db.Articles.Find(id);
+
+            if (article.CreatedUserId != User.Identity.GetUserId())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             db.Articles.Remove(article);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult Approve(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Article article = db.Articles.Find(id);
+            article.IsApproved = true;
+
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "Article");
         }
 
         protected override void Dispose(bool disposing)

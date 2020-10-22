@@ -16,7 +16,10 @@
           <Property Name="CreatedUserName" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="CreatedDate" Type="smalldatetime" Nullable="false" />
           <Property Name="UpdatedDate" Type="smalldatetime" />
+          <Property Name="IsApproved" Type="bit" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ArticleCategory">
           <Key>
             <PropertyRef Name="ArticleId" />
@@ -59,8 +62,13 @@
         </Association>
         <EntityContainer Name="MarrwieModelStoreContainer">
           <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ArticleCategory" EntityType="Self.ArticleCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ArticleCategory" EntityType="Self.ArticleCategory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ArticleCategory].[ArticleId] AS [ArticleId], 
+    [ArticleCategory].[CategoryId] AS [CategoryId]
+    FROM [dbo].[ArticleCategory] AS [ArticleCategory]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_ArticleCategory_Article" Association="Self.FK_ArticleCategory_Article">
             <End Role="Article" EntitySet="Article" />
             <End Role="ArticleCategory" EntitySet="ArticleCategory" />
@@ -86,6 +94,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Categories" Relationship="Self.ArticleCategory" FromRole="Article" ToRole="Category" />
+          <Property Name="IsApproved" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -117,6 +126,7 @@
           <EntitySetMapping Name="Articles">
             <EntityTypeMapping TypeName="MarrwieModel.Article">
               <MappingFragment StoreEntitySet="Article">
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Desciption" ColumnName="Desciption" />

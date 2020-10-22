@@ -1,5 +1,23 @@
 ﻿@model IEnumerable<Marrwie.Models.ArticleViewModel>
 
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">İçerik</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="myModalBody" style="font-size:10px; font-style:italic;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -17,35 +35,60 @@
         <th>
             @Html.DisplayNameFor(model => model.UpdatedDate)
         </th>
+        <th>Onaylanmış</th>
         <th>
             @Html.DisplayNameFor(model => model.ArticleCategoriesString)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedUserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdatedDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ArticleCategoriesString)
-        </td>
-        <td>
-            @Html.ActionLink("Güncelle", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Detay", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Sil", "Delete", new { id = item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedDate)
+            </td>
+            <td><span>@(item.IsApproved ? "Evet" : "Hayır")</span></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArticleCategoriesString)
+            </td>
+            <td>
+                <span> <a href="#" onclick="OpenPopupForArticle('@item.Desciption')">İçerik</a> |</span>
+                @if (item.IsAuthorizedForEdit)
+                {
+                    <span> @Html.ActionLink("Güncelle", "Edit", new { id = item.Id }) |</span>
+                }
+                @if (item.IsAuthorizedForDetails)
+                {
+                    <span>@Html.ActionLink("Detay", "Details", new { id = item.Id }) |</span>
+                }
+                @if (item.IsAuthorizedForDelete)
+                {
+                    <span>@Html.ActionLink("Sil", "Delete", new { id = item.Id }) |</span>
+                }
+                @if (item.IsAuthorizedForApprove)
+                {
+                    <span>@Html.ActionLink("Onayla", "Approve", new { id = item.Id }) </span>
+                }
+            </td>
+        </tr>
+    }
 
 </table>
+
+<script>
+    function OpenPopupForArticle(description) {
+        $('#myModal').modal('toggle');
+        $('#myModalBody').html(description);
+    }
+</script>
+

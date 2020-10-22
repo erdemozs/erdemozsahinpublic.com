@@ -29,22 +29,25 @@
                     </li>
 
                     @Html.Partial("_CategoryPartial")
-                    @if (User.IsInRole("admin"))
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Admin Panel
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin Panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @if (User.IsInRole("admin"))
+                            {
                                 <a class="dropdown-item" href="@Url.Action("Index", "Category")">Kategori</a>
-                                <a class="dropdown-item" href="@Url.Action("Index", "Article")">Makale</a>
+                            }
+                            <a class="dropdown-item" href="@Url.Action("Index", "Article")">Makale</a>
+                            @if (User.IsInRole("admin"))
+                            {
                                 <a class="dropdown-item" href="@Url.Action("Index", "User")">Kullanıcılar</a>
                                 <a class="dropdown-item" href="@Url.Action("Index", "Role")">Roller</a>
                                 <a class="dropdown-item" href="@Url.Action("GetUsersToAddRole", "Account")">Yetkiler</a>
                                 <a class="dropdown-item" href="@Url.Action("Index", "Log")">Log</a>
-                            </div>
-                        </li>
-                    }
+                            }
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="https://github.com/erdemozs/erdemozsahinpublic.com">Git Hub(Source Code)</a>
                     </li>

@@ -32,6 +32,11 @@ namespace Marrwie.Models
 
         [Display(Name = "Kategoriler")]
         public string ArticleCategoriesString { get; set; }
+        public bool IsApproved { get; set; }
+        public bool IsAuthorizedForEdit { get; set; }
+        public bool IsAuthorizedForDelete { get; set; }
+        public bool IsAuthorizedForDetails { get; set; }
+        public bool IsAuthorizedForApprove { get; set; }
 
         [Display(Name = "Kategoriler")]
         public List<ArticleCategoriesViewModel> ArticleCategories { get; set; }
