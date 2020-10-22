@@ -39,9 +39,6 @@
         <th>
             @Html.DisplayNameFor(model => model.ArticleCategoriesString)
         </th>
-        <th>
-           İçerik
-        </th>
         <th></th>
     </tr>
 
@@ -63,9 +60,6 @@
             <td><span>@(item.IsApproved ? "Evet" : "Hayır")</span></td>
             <td>
                 @Html.DisplayFor(modelItem => item.ArticleCategoriesString)
-            </td>
-            <td>
-                <span> @Html.Raw(item.Desciption)</span>
             </td>
             <td>
                 @if (item.IsAuthorizedForEdit)
