@@ -38,7 +38,10 @@
                             {
                                 <a class="dropdown-item" href="@Url.Action("Index", "Category")">Kategori</a>
                             }
-                            <a class="dropdown-item" href="@Url.Action("Index", "Article")">Makale</a>
+                            @if (User.IsInRole("admin") || User.IsInRole("user"))
+                            {
+                                <a class="dropdown-item" href="@Url.Action("Index", "Article")">Makale</a>
+                            }
                             @if (User.IsInRole("admin"))
                             {
                                 <a class="dropdown-item" href="@Url.Action("Index", "User")">Kullanıcılar</a>
