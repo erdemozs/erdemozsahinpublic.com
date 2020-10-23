@@ -27,5 +27,6 @@ namespace Marrwie.Entities
     
         public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<ArticleFile> ArticleFiles { get; set; }
     }
 }

@@ -41,9 +41,13 @@ namespace Marrwie.Models
         [Display(Name = "Kategoriler")]
         public List<ArticleCategoriesViewModel> ArticleCategories { get; set; }
 
+        [Display(Name = "Dosyalar")]
+        public List<HttpPostedFileBase> ArticleFiles { get; set; }
+
         public ArticleViewModel()
         {
             ArticleCategories = new List<ArticleCategoriesViewModel>();
+            ArticleFiles = new List<HttpPostedFileBase>();
         }
     }
 

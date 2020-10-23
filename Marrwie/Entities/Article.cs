@@ -18,6 +18,7 @@ namespace Marrwie.Entities
         public Article()
         {
             this.Categories = new HashSet<Category>();
+            this.ArticleFiles = new HashSet<ArticleFile>();
         }
     
         public int Id { get; set; }
@@ -31,5 +32,7 @@ namespace Marrwie.Entities
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Category> Categories { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ArticleFile> ArticleFiles { get; set; }
     }
 }

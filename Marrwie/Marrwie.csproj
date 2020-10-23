@@ -180,6 +180,9 @@
     <Compile Include="Entities\Article.cs">
       <DependentUpon>MyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\ArticleFile.cs">
+      <DependentUpon>MyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Category.cs">
       <DependentUpon>MyModel.tt</DependentUpon>
     </Compile>
@@ -328,6 +331,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
     <Folder Include="Store\" />
   </ItemGroup>
   <ItemGroup>

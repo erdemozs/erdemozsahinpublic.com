@@ -18,8 +18,6 @@
           <Property Name="UpdatedDate" Type="smalldatetime" />
           <Property Name="IsApproved" Type="bit" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ArticleCategory">
           <Key>
             <PropertyRef Name="ArticleId" />
@@ -27,6 +25,17 @@ warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a prima
           </Key>
           <Property Name="ArticleId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ArticleFile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="RowName" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="MimeType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Ext" Type="nvarchar" MaxLength="20" />
+          <Property Name="ArticleId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -60,15 +69,23 @@ warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ArticleFile_ArticleFile">
+          <End Role="Article" Type="Self.Article" Multiplicity="1" />
+          <End Role="ArticleFile" Type="Self.ArticleFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArticleFile">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="MarrwieModelStoreContainer">
           <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ArticleCategory" EntityType="Self.ArticleCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ArticleFile" EntityType="Self.ArticleFile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ArticleCategory" EntityType="Self.ArticleCategory" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ArticleCategory].[ArticleId] AS [ArticleId], 
-    [ArticleCategory].[CategoryId] AS [CategoryId]
-    FROM [dbo].[ArticleCategory] AS [ArticleCategory]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_ArticleCategory_Article" Association="Self.FK_ArticleCategory_Article">
             <End Role="Article" EntitySet="Article" />
             <End Role="ArticleCategory" EntitySet="ArticleCategory" />
@@ -76,6 +93,10 @@ warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a prima
           <AssociationSet Name="FK_ArticleCategory_Category" Association="Self.FK_ArticleCategory_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="ArticleCategory" EntitySet="ArticleCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ArticleFile_ArticleFile" Association="Self.FK_ArticleFile_ArticleFile">
+            <End Role="Article" EntitySet="Article" />
+            <End Role="ArticleFile" EntitySet="ArticleFile" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -95,6 +116,7 @@ warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a prima
           <Property Name="UpdatedDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Categories" Relationship="Self.ArticleCategory" FromRole="Article" ToRole="Category" />
           <Property Name="IsApproved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ArticleFiles" Relationship="MarrwieModel.FK_ArticleFile_ArticleFile" FromRole="Article" ToRole="ArticleFile" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -116,7 +138,36 @@ warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a prima
             <End Role="Article" EntitySet="Articles" />
             <End Role="Category" EntitySet="Categories" />
           </AssociationSet>
+          <EntitySet Name="ArticleFiles" EntityType="MarrwieModel.ArticleFile" />
+          <AssociationSet Name="FK_ArticleFile_ArticleFile" Association="MarrwieModel.FK_ArticleFile_ArticleFile">
+            <End Role="Article" EntitySet="Articles" />
+            <End Role="ArticleFile" EntitySet="ArticleFiles" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="ArticleFile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="RowName" Type="Guid" Nullable="false" />
+          <Property Name="MimeType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ArticleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Article" Relationship="MarrwieModel.FK_ArticleFile_ArticleFile" FromRole="ArticleFile" ToRole="Article" />
+          <Property Name="Ext" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_ArticleFile_ArticleFile">
+          <End Type="MarrwieModel.Article" Role="Article" Multiplicity="1" />
+          <End Type="MarrwieModel.ArticleFile" Role="ArticleFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArticleFile">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -154,6 +205,18 @@ warning 6002: The table/view 'Marrwie.dbo.ArticleCategory' does not have a prima
               <ScalarProperty Name="Id" ColumnName="CategoryId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="ArticleFiles">
+            <EntityTypeMapping TypeName="MarrwieModel.ArticleFile">
+              <MappingFragment StoreEntitySet="ArticleFile">
+                <ScalarProperty Name="Ext" ColumnName="Ext" />
+                <ScalarProperty Name="ArticleId" ColumnName="ArticleId" />
+                <ScalarProperty Name="MimeType" ColumnName="MimeType" />
+                <ScalarProperty Name="RowName" ColumnName="RowName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

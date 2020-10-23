@@ -1,7 +1,6 @@
 ﻿@model Marrwie.Models.ArticleViewModel
 
-@using (Html.BeginForm())
-{
+<form action="#" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
@@ -35,6 +34,15 @@
                 }
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Dosyalar</label>
+            <div class="col-md-10">
+                <input type="file" name="ArticleFiles" multiple>
+                <br>
+                After uploading multiple files, click Submit.
+                <br>
+            </div>
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -42,7 +50,7 @@
             </div>
         </div>
     </div>
-}
+</form>
 
 <div>
     @Html.ActionLink("Back to List", "Index")
@@ -51,3 +59,5 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+

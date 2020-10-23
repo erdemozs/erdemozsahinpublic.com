@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Marrwie.Entities;
 using Microsoft.AspNet.Identity;
 using Marrwie.Models;
+using System.IO;
 
 namespace Marrwie.Controllers
 {
@@ -113,6 +114,34 @@ namespace Marrwie.Controllers
                 foreach (var addedCategoryId in addedCategoryIds)
                 {
                     article.Categories.Add(db.Categories.Find(addedCategoryId));
+                }
+
+                
+                if (model.ArticleFiles.Count > 0)
+                {
+                    if(model.ArticleFiles.FirstOrDefault() != null) { 
+                        
+                        foreach (var artFile in model.ArticleFiles)
+                        {
+                            Guid guid = Guid.NewGuid();
+                            string ext = Path.GetExtension(artFile.FileName);
+                            string name = Path.GetFileNameWithoutExtension(artFile.FileName);
+                            article.ArticleFiles.Add(new ArticleFile()
+                            {
+                                MimeType = artFile.ContentType,
+                                Ext = ext,
+                                Name = name,
+                                RowName = guid
+                            }); ;
+
+                            var path = Server.MapPath("/Images");
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            var fullPath = string.Format(@"{0}\{1}{2}", path, guid, ext);
+                            artFile.SaveAs(fullPath);
+                        }
+                    }
                 }
 
                 db.Articles.Add(article);

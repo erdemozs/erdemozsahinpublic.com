@@ -8,6 +8,8 @@
         <EntityTypeShape EntityType="MarrwieModel.Article" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="MarrwieModel.Category" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
         <AssociationConnector Association="MarrwieModel.ArticleCategory" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MarrwieModel.ArticleFile" Width="1.5" PointX="3" PointY="4.375" />
+        <AssociationConnector Association="MarrwieModel.FK_ArticleFile_ArticleFile" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
