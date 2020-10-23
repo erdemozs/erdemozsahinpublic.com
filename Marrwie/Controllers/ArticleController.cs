@@ -14,6 +14,7 @@ using System.IO;
 
 namespace Marrwie.Controllers
 {
+    [Authorize(Roles = "admin,user")]
     public class ArticleController : Controller
     {
         private MarrwieDbContext db = new MarrwieDbContext();

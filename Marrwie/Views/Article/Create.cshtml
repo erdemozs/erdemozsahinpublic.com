@@ -34,18 +34,17 @@
                 }
             </div>
         </div>
-        @if (User.IsInRole("admin"))
-        {
-            <div class="form-group">
-                <label class="control-label col-md-2">Dosyalar</label>
-                <div class="col-md-10">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Dosyalar</label>
+            <div class="col-md-10">
+                @if (User.IsInRole("admin"))
+                {
                     <input type="file" name="ArticleFiles" multiple>
                     <br>
-                    After uploading multiple files, click Submit.
-                    <br>
-                </div>
+                }
             </div>
-        }
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
