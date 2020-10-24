@@ -270,6 +270,7 @@ namespace Marrwie.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        [HttpPost]
         public ActionResult Approve(int? id)
         {
             if (id == null)
@@ -282,7 +283,7 @@ namespace Marrwie.Controllers
 
             db.SaveChanges();
 
-            return RedirectToAction("Index", "Article");
+            return Json(new { Url = "/Article/Index" });
         }
 
         protected override void Dispose(bool disposing)

@@ -76,12 +76,25 @@
                 }
                 @if (item.IsAuthorizedForApprove)
                 {
-                    <span>@Html.ActionLink("Onayla", "Approve", new { id = item.Id }) </span>
+                    <span><button onclick="Approve('@item.Id')" class="btn btn-danger">Onayla</button> </span>
                 }
             </td>
         </tr>
     }
 
 </table>
+
+<script>
+    function Approve(id) {
+        $.ajax({
+            url:"@Url.Action("Approve","Article")",
+            method :"post",
+            data: { id: id },
+            success: function (result) {
+                window.location.href = result.Url;
+            }
+        });
+    }
+</script>
 
 
